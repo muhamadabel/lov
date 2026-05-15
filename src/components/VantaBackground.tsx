@@ -14,6 +14,7 @@ export const VantaBackground = () => {
     const initVanta = async () => {
       if (!vantaEffect && vantaRef.current) {
         // vanta/dist/vanta.fog.min often needs dynamic import or global setup
+        // @ts-expect-error: Vanta doesn't have official types
         const FOG = (await import('vanta/dist/vanta.fog.min')).default;
         
         setVantaEffect(
