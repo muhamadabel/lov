@@ -1,0 +1,268 @@
+markdown
+
+# LOVie — AI IDE Prompt (Landing Page)
+
+> Paste prompt ini ke Cursor / Windsurf / IDE kamu sebelum mulai coding.
+> Baca semua file konteks dulu (prd.md, design-tokens.md, content.md) sebelum nulis satu baris pun.
+
+---
+
+## KONTEKS PROJECT
+
+Kamu sedang membangun **LOVie** — sebuah website personal yang dibuat sebagai ungkapan terima kasih yang tulus. Ini bukan website biasa. Ini adalah pengalaman sinematik dan emosional. Setiap scroll harus terasa seperti membalik halaman buku. Setiap animasi harus lambat, disengaja, dan intim.
+
+**Referensi visual utama:** https://clarte.page  
+Perhatikan cara mereka menggunakan tipografi serif besar, whitespace ekstrem, dan scroll yang terasa seperti film — bukan website.
+
+---
+
+## TECH STACK
+
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS
+- **Animasi:** Framer Motion (WAJIB untuk semua scroll animation)
+- **Font:** Cormorant Garamond (display/heading) + DM Sans (body) — import dari Google Fonts
+- **Hosting:** Vercel
+
+---
+
+## COLOR SYSTEM
+
+Gunakan HANYA dua warna ini. Tidak ada warna lain.
+
+```css
+--color-bg: #AB1509;        /* Deep crimson — background utama */
+--color-cream: #FFF7D3;     /* Warm cream — semua teks, elemen foreground */
+```
+
+Semua teks: `#FFF7D3`  
+Semua background: `#AB1509`  
+Subtle variation boleh pakai opacity dari dua warna ini saja (misal `rgba(255,247,211,0.08)` untuk border tipis).
+
+---
+
+## STRUKTUR HALAMAN
+
+Build **satu per satu section** secara berurutan. Jangan build semua sekaligus. Minta konfirmasi setelah tiap section selesai.
+
+---
+
+### SECTION 1 — HERO
+
+**Layout:** Full viewport height. Teks di tengah secara vertikal.
+
+**Konten:**
+```
+LOVIE                          ← font: Cormorant Garamond, weight 700, ~120px, uppercase
+God of 35                      ← font: Cormorant Garamond, weight 300 italic, ~64px
+```
+
+**Animasi:**
+- "LOVIE" muncul fade + slight scale dari bawah, delay 0.3s
+- "God of 35" muncul word by word, tiap kata delay 0.15s setelah kata sebelumnya
+- Durasi tiap animasi: 1.2s, ease: `[0.16, 1, 0.3, 1]`
+- Scroll indicator (chevron kecil atau titik) muncul di bawah setelah 2s, gentle bounce loop
+
+**Background:**
+- Solid `#AB1509`
+- Tambahkan subtle vignette: radial gradient dari `rgba(0,0,0,0)` di tengah ke `rgba(0,0,0,0.35)` di pinggir
+
+---
+
+### SECTION 2 — ABOUT HER
+
+**Layout:** Dua kolom. Kiri: image placeholder (foto animasi 1). Kanan: heading + body text.
+
+**Konten kanan:**
+```
+VIE                            ← Cormorant Garamond, bold, ~80px
+Puput Octaviana Siam           ← DM Sans, 12px, letter-spacing lebar, opacity 0.6
+
+[teks about her — lihat content.md]
+```
+
+**Animasi:**
+- Image kolom kiri: fade in dari kiri, slide 40px → 0, saat section masuk viewport
+- "VIE" heading: fade in dari kanan
+- Teks body: reveal per baris (line by line), delay 0.1s antar baris
+- Semua trigger saat elemen masuk viewport (Framer Motion `whileInView`)
+- `viewport={{ once: true, margin: "-100px" }}`
+
+**Catatan foto:**
+- Gunakan placeholder `<div>` dengan label "image animasi 1" untuk sekarang
+- Dimensi: ~400x500px, background `rgba(255,247,211,0.1)`, border `1px solid rgba(255,247,211,0.2)`
+
+---
+
+### SECTION 3 — PHOTO GALLERY
+
+**Layout:** 4 foto dalam grid 2x2 atau horizontal scroll, dengan efek 3D tilt merespons mouse.
+
+**Referensi komponen:** `reference-stellar-gallery.tsx` (file sudah ada di root project)  
+Gunakan versi ringan — **4 foto saja, tanpa OrbitControls.**
+
+**Animasi:**
+- Tiap card: `rotateX` dan `rotateY` mengikuti posisi mouse secara smooth (mouse parallax)
+- Hover: subtle scale 1.03
+- Masuk viewport: staggered fade up, delay 0.15s antar card
+
+**Catatan foto:**
+- 4 placeholder untuk sekarang, label "foto 1" sampai "foto 4"
+- Tiap foto ada caption kecil di bawah, font DM Sans 11px, opacity 0.5
+
+---
+
+### SECTION 4 — MEMORY REVEAL
+
+**Layout:** Full width. Teks panjang di tengah. Max-width 680px.
+
+**Konten:** `[lihat content.md — bagian Memory Reveal]`
+
+**Animasi:**
+- Teks muncul line per line saat scroll
+- Setiap baris: `opacity: 0 → 1`, `y: 20 → 0`, duration 0.8s
+- Delay antar baris: 0.12s
+- Efek: seperti ingatan yang naik ke permukaan satu per satu
+- Di tengah-tengah teks, sisipkan foto ke-3 dan ke-4 dengan fade in tersendiri
+
+---
+
+### SECTION 5 — PLAYLIST / SPOTIFY
+
+**Layout:** Satu kolom, teks di atas — album art di tengah — embed Spotify di bawah.
+
+**Konten teks:** `[lihat content.md — bagian Playlist Section]`
+
+**Animasi album art (PENTING):**  
+Gunakan efek **buku membuka** (ContainerScroll / page flip):
+- Referensi komponen: `reference-container-scroll.tsx` (file ada di root project)
+- Album art muncul seperti halaman buku yang membuka saat user scroll ke section ini
+- `rotateY: -180 → 0`, spring: `{ stiffness: 250, damping: 30, mass: 0.8 }`
+- Setelah terbuka penuh, Spotify embed fade in dengan delay 0.5s
+
+**Spotify embed:**
+```
+https://open.spotify.com/playlist/3FwG4viEOS8D0Kc1rNMscp
+```
+Gunakan iframe embed resmi Spotify. Width 100%, max-width 500px, height 352px (compact player).
+
+**Heading:**
+```
+Al boom                        ← Cormorant Garamond, bold, ~80px
+```
+
+---
+
+### SECTION 6 — MAZE GAME
+
+**Implementasi:**
+- Lazy load via `next/dynamic` dengan `{ ssr: false }`
+- Canvas API, 2D maze sederhana
+- Ukuran: 400x400px, centered
+- Warna: cream `#FFF7D3` untuk dinding dan player, background transparan/gelap
+
+**Setelah menang:**
+- Particle burst — warna cream dengan opacity bervariasi
+- Quote random muncul di atas canvas dengan fade in
+- 5 quote (lihat content.md — bagian Game Quotes)
+
+**Styling maze:**
+- Border canvas: `1px solid rgba(255,247,211,0.2)`
+- Player dot: solid `#FFF7D3`, radius 5px
+- Dinding: stroke `rgba(255,247,211,0.6)`
+
+---
+
+### SECTION 7 — LOGIN GATE (PALING BAWAH)
+
+**Konsep:**  
+Section ini **tersembunyi** sampai user benar-benar scroll ke paling bawah — terinspirasi dari cara clarte.page menyembunyikan section terakhirnya. Rasanya seperti menemukan sesuatu yang tidak semua orang akan lihat.
+
+**Reveal mechanic:**
+- Section awalnya `opacity: 0` dan `scale: 0.95`
+- Baru muncul saat scroll progress mencapai 95%+ dari total halaman
+- Atau: gunakan Framer Motion `useScroll` + `useTransform` untuk tie opacity ke scroll position
+- Tambahkan blur yang perlahan hilang: `filter: blur(8px) → blur(0px)` seiring scroll
+
+**Layout:**
+- Animasi hati kecil melayang — 3–5 hati kecil dengan float animation loop, opacity 0.3–0.6
+- Input username dan password, styling minimal:
+  - Background: `transparent`
+  - Border: `1px solid rgba(255,247,211,0.3)`
+  - Text: `#FFF7D3`
+  - Placeholder: `rgba(255,247,211,0.4)`
+  - Padding: `12px 16px`
+  - Border-radius: `4px`
+
+**Button LOGIN:**
+> ⚠️ GUNAKAN KODE GLOW BUTTON YANG SUDAH ADA (file: `reference-glow-button.tsx`)  
+> Jangan buat button biasa. Terapkan glow button dari referensi tersebut dengan warna disesuaikan ke cream `#FFF7D3`.
+
+**Logic auth:**
+```javascript
+const CREDENTIALS = {
+  username: "AB1509",   // ← username
+  password: "35"        // ← password
+}
+```
+- Validasi: client-side saja, tidak ada backend, tidak ada database
+- Jika salah: shake animation `x: [-10, 10, -5, 5, 0]`, duration 0.4s + teks error kecil
+- Jika benar: `AnimatePresence` → fade out login form → fade in FarewellPage component
+
+---
+
+## FAREWELL PAGE (setelah login berhasil)
+
+> Build ini setelah Landing Page selesai dan dikonfirmasi.
+
+**Tone:** Intim. Hening. Jujur. Tidak ada animasi berlebihan.
+
+**Konten lengkap:** lihat content.md — bagian Farewell Page / Surat
+
+**Struktur:**
+1. Sapaan "Moy," — Cormorant Garamond, large, italic
+2. Teks terima kasih — body, line spacing longgar
+3. Spotify embed (playlist yang sama)
+4. Teks permintaan maaf
+5. Penutup — italic, centered
+6. Foto ke-5 Puput — sudut kanan bawah, efek grayscale → color saat hover
+
+---
+
+## ATURAN ANIMASI (WAJIB DIIKUTI)
+
+1. **Semua animasi LAMBAT** — minimum duration 0.8s, ideal 1.2s
+2. **Tidak ada yang tiba-tiba** — selalu ada ease in/out
+3. **Ease default:** `[0.16, 1, 0.3, 1]` (custom bezier, sinematik)
+4. **Scroll-driven:** gunakan `whileInView` + `viewport={{ once: true }}`
+5. **Stagger:** elemen dalam satu group muncul berurutan, delay 0.1–0.15s
+6. **Tidak ada bounce** kecuali scroll indicator di hero
+
+---
+
+## URUTAN BUILD
+
+Kerjakan dalam urutan ini, konfirmasi setelah tiap step:
+
+- [ ] Step 1: Setup project, install dependencies, layout shell, import fonts
+- [ ] Step 2: Section 1 — Hero
+- [ ] Step 3: Section 2 — About Her
+- [ ] Step 4: Section 3 — Photo Gallery
+- [ ] Step 5: Section 4 — Memory Reveal
+- [ ] Step 6: Section 5 — Playlist / Spotify
+- [ ] Step 7: Section 6 — Maze Game
+- [ ] Step 8: Section 7 — Login Gate
+- [ ] Step 9: Farewell Page
+- [ ] Step 10: Polish, responsiveness, Vercel deploy
+
+**Mulai dari Step 1. Setelah selesai, tunjukkan hasilnya dan tunggu konfirmasi sebelum lanjut.**
+
+---
+
+## CATATAN TAMBAHAN
+
+- Semua foto masih placeholder — Abel akan kasih foto aslinya nanti
+- Username login: `AB1509` | Password: `35`
+- Referensi animasi clarte.page — perhatikan cara scroll terasa seperti membalik buku, bukan scrolling biasa
+- Zero unsur perpisahan di Landing Page — murni gratitude dan apresiasi
+- Perpisahan hanya ada di Farewell Page (setelah login)
