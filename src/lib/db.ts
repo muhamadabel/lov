@@ -69,6 +69,30 @@ export function ensureSchema(): Promise<void> {
         const params = DEFAULT_PROMPTS.flatMap((p, i) => [`seed-${i}`, p]);
         await pool.query(`INSERT INTO placeholders (id, prompt, sort) VALUES ${values}`, params);
       }
+
+      // ---- Virtual pet (Garfield) ----
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS pet (
+          id integer PRIMARY KEY,
+          last_fed timestamptz NOT NULL DEFAULT now(),
+          last_coffee timestamptz,
+          happiness integer NOT NULL DEFAULT 60,
+          growth integer NOT NULL DEFAULT 0,
+          updated_at timestamptz NOT NULL DEFAULT now(),
+          CONSTRAINT pet_singleton CHECK (id = 1)
+        );
+      `);
+      await pool.query("INSERT INTO pet (id) VALUES (1) ON CONFLICT (id) DO NOTHING");
+      await pool.query("ALTER TABLE pet ADD COLUMN IF NOT EXISTS lasagna integer NOT NULL DEFAULT 3");
+      await pool.query("ALTER TABLE pet ADD COLUMN IF NOT EXISTS stuffed_until timestamptz");
+      await pool.query("ALTER TABLE pet ADD COLUMN IF NOT EXISTS born_at timestamptz NOT NULL DEFAULT now()");
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS pet_diary (
+          id bigserial PRIMARY KEY,
+          entry text NOT NULL,
+          created_at timestamptz NOT NULL DEFAULT now()
+        );
+      `);
     })().catch((e) => {
       // reset supaya percobaan berikutnya bisa coba lagi
       global._lovieSchemaReady = undefined;

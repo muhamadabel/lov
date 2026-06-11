@@ -1,8 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePet } from "@/lib/scrapbook/pet";
 import { RomanticBackground } from "@/components/scrapbook/RomanticBackground";
 import { Book3D } from "@/components/scrapbook/Book3D";
 import { ChallengeSlot } from "@/components/scrapbook/space/ChallengeSlot";
@@ -32,6 +34,8 @@ export default function SpacePage() {
 
   const [active, setActive] = useState<Active>(null);
   const [managing, setManaging] = useState(false);
+  const { state: pet } = usePet();
+  const [lockOpen, setLockOpen] = useState(true);
 
   // Pastikan latar gelap edge-to-edge (globals.css bikin body crimson untuk halaman utama)
   useEffect(() => {
@@ -114,6 +118,19 @@ export default function SpacePage() {
         </svg>
       </button>
 
+      {/* tombol Garfield */}
+      <Link
+        href="/space/pet"
+        aria-label="main sama WOWO"
+        title="main sama WOWO"
+        className="fixed right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition hover:bg-white/10"
+      >
+        <span style={{ fontSize: 18, lineHeight: 1 }}>🐱</span>
+        {pet?.mood === "ngambek" && (
+          <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full" style={{ background: "#E8913C", boxShadow: "0 0 0 2px #0E0100" }} />
+        )}
+      </Link>
+
       <div className="relative z-10 flex min-h-dvh items-center justify-center px-4 py-24">
         <Book3D title="Collection Book" pages={pages} />
       </div>
@@ -158,6 +175,37 @@ export default function SpacePage() {
 
       <AnimatePresence>
         {managing && <ManagePanel onClose={() => setManaging(false)} />}
+      </AnimatePresence>
+
+      {/* Garfield ngunci buku (ngambek) */}
+      <AnimatePresence>
+        {pet?.mood === "ngambek" && lockOpen && (
+          <motion.div
+            className="fixed inset-0 z-[70] flex flex-col items-center justify-center gap-5 px-8 text-center"
+            style={{ background: "rgba(8,1,0,0.94)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div style={{ fontSize: 72 }}>🙀</div>
+            <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 26, color: "#F6E2C0" }}>
+              WOWO ngunci bukunya.
+            </p>
+            <p className="max-w-xs" style={{ fontFamily: "var(--font-hand)", fontSize: 17, color: "rgba(246,226,192,0.7)", lineHeight: 1.5 }}>
+              dia ngambek gara-gara telat dikasih makan. kasih makan dulu, baru dia ngebukain bukunya.
+            </p>
+            <Link
+              href="/space/pet"
+              className="rounded-full px-7 py-3"
+              style={{ background: "#E8913C", color: "#3a2410", fontFamily: "var(--font-body)", fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase" }}
+            >
+              🍝 tengok WOWO
+            </Link>
+            <button onClick={() => setLockOpen(false)} style={{ fontFamily: "var(--font-hand)", fontSize: 14, color: "rgba(246,226,192,0.4)" }}>
+              buka paksa aja (dia bakal cemberut)
+            </button>
+          </motion.div>
+        )}
       </AnimatePresence>
     </main>
   );
@@ -226,25 +274,31 @@ function SidePage({
 // ---------------- pembuka & penutup ----------------
 
 function DedicationPage() {
-  const segs = ["Collection Book.", "Pelan-pelan aja ngisinya —", "satu foto tiap ada momennya."];
   return (
-    <div className="flex h-full flex-col justify-center px-8">
-      {segs.map((s, i) => (
-        <motion.span
-          key={i}
-          className="block"
-          style={{ fontFamily: "var(--font-hand)", fontSize: 21, color: "#4A2C1E" }}
-          initial={{ clipPath: "inset(0 100% 0 0)" }}
-          whileInView={{ clipPath: "inset(0 0% 0 0)" }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: i * 0.25, ease: EASE }}
-        >
-          {s}
-        </motion.span>
-      ))}
-      <p className="mt-6" style={{ fontFamily: "var(--font-hand)", fontSize: 14, color: "#7A2D1C" }}>
-        balik halamannya →
-      </p>
+    <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+      <motion.h2
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          fontSize: "clamp(34px, 7vw, 52px)",
+          lineHeight: 1.05,
+          color: "#4A2C1E",
+        }}
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: EASE }}
+      >
+        Collection Book
+      </motion.h2>
+      <motion.span
+        className="mt-4 block h-px w-12"
+        style={{ background: "rgba(74,44,30,0.35)" }}
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
+      />
     </div>
   );
 }
