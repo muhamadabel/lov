@@ -3,6 +3,33 @@
 @theme {
   --color-bg: #AB1509;
   --color-cream: #FFF7D3;
+
+  /* Buku Koleksi Memori — "The Living Book" (lihat scrapbook-design.md §9.2) */
+  --color-night-0: #0E0100;
+  --color-night-1: #1A0201;
+  --color-night-2: #2A0301;
+  --color-leather-hi: #5A1408;
+  --color-leather-lo: #3B0E05;
+  --color-kraft-hi: #6B4A2F;
+  --color-kraft-lo: #4E3320;
+  --color-gold: #D9A441;
+  --color-gold-hi: #F2CD7E;
+  --color-gold-lo: #8A6420;
+  --color-amber: #FFB36B;
+  --color-ember: #FFC86B;
+  --color-paper: #F2E6C9;
+  --color-paper-hi: #F5E9D0;
+  --color-paper-lo: #D9C8A3;
+  --color-paper-edge: #E4D4AE;
+  --color-polaroid: #FBF6E8;
+  --color-sticky: #FFEFB5;
+  --color-ink: #4A2C1E;
+  --color-ink-red: #7A2D1C;
+  --color-ink-faded: #9C8568;
+  --color-ink-deep: #2B1408;
+  --color-wax: #8C1107;
+  --color-wax-hi: #B33A2B;
+  --color-blush: #E9B5A6;
 }
 
 :root {

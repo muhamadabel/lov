@@ -6,28 +6,37 @@ import Image from "next/image";
 import bgImage from "@/gambar/bga.jpg";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { authenticate } from "@/lib/scrapbook/auth";
+
+const WELCOME: Record<string, { title: string; subtitle: string }> = {
+  "/farewell": { title: "Welcome, Vie.", subtitle: "Jangan cengeng yaww" },
+  "/space": { title: "Welcome.", subtitle: "Ada sebuah ruang kecil buat kita…" },
+};
 
 export function LoginSection() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [unlockedRoute, setUnlockedRoute] = useState<string | null>(null);
 
   const router = useRouter();
 
   const handleLogin = () => {
-    if (name.toLowerCase() === "vie" && password === "35") {
-      setIsUnlocked(true);
+    const result = authenticate(name, password);
+    if (result) {
+      setUnlockedRoute(result.route);
       setError(false);
 
-      // Redirect ke halaman farewell setelah sedikit delay
+      // Redirect setelah sedikit delay
       setTimeout(() => {
-        router.push("/farewell");
+        router.push(result.route);
       }, 2500);
     } else {
       setError(true);
     }
   };
+
+  const welcome = unlockedRoute ? WELCOME[unlockedRoute] ?? WELCOME["/farewell"] : null;
 
   return (
     <section
@@ -48,7 +57,7 @@ export function LoginSection() {
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-md px-6">
         <AnimatePresence mode="wait">
-          {!isUnlocked ? (
+          {!welcome ? (
             <motion.div
               key="login-form"
               initial={{ opacity: 0, y: 20 }}
@@ -105,9 +114,9 @@ export function LoginSection() {
               transition={{ duration: 1, delay: 0.5 }}
               className="text-center flex flex-col items-center"
             >
-              <h2 className="text-5xl md:text-7xl font-display text-[#FFF7D3] mb-6">Welcome, Vie.</h2>
+              <h2 className="text-5xl md:text-7xl font-display text-[#FFF7D3] mb-6">{welcome.title}</h2>
               <p className="text-xl text-[#FFF7D3]/80 italic font-light max-w-lg text-center leading-relaxed">
-                Jangan cengeng yaww
+                {welcome.subtitle}
               </p>
             </motion.div>
           )}
