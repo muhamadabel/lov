@@ -152,7 +152,7 @@ export default function SpacePage() {
               animate={{ opacity: [0, 1, 1, 0] }}
               transition={{ duration: 3, times: [0, 0.25, 0.7, 1] }}
             >
-              ada sebuah ruang kecil buat kita…
+              Sabar tunggu…
             </motion.p>
           </motion.div>
         )}

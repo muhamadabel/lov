@@ -10,7 +10,7 @@ import { authenticate } from "@/lib/scrapbook/auth";
 
 const WELCOME: Record<string, { title: string; subtitle: string }> = {
   "/farewell": { title: "Welcome, Vie.", subtitle: "Jangan cengeng yaww" },
-  "/space": { title: "Welcome.", subtitle: "Ada sebuah ruang kecil buat kita…" },
+  "/space": { title: "Welcome.", subtitle: "Sabar tunggu…" },
 };
 
 export function LoginSection() {
